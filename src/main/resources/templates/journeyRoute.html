@@ -1,0 +1,92 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+#map {
+        width: 100%;
+        height: 800px;
+     }
+    </style>
+</head>
+  <body onload="initMap();">
+    <h3>My Google Maps Demo</h3>
+    <div id="map"></div>
+    
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+	var routeData = [[${routeData}]]; 
+	/*]]>*/ 
+      function initMap() {
+    	  var routeCoords = [];
+    	  /*<![CDATA[*/
+			//var routeData = [[${routeData}]]; 
+			var mapDiv = document.getElementById('map');
+	          var map = new google.maps.Map(mapDiv, {
+	              center: {lat: routeData[0].latitude, lng: routeData[0].longitude},
+	              zoom: 8
+	          });
+			var boxList = [];
+			var boxText1 = document.createElement("div");
+            var infowindow = new google.maps.InfoWindow({
+                disableAutoPan: true
+              ,isHidden:false
+              ,pixelOffset: new google.maps.Size(-10, -10)
+              ,closeBoxURL: ""
+              ,pane: "mapPane"
+              ,enableEventPropagation: true
+            });
+          for(i=0;i<routeData.length;i++) {
+  			/*]]>*/ 
+        	  routeCoords.push({"lat": routeData[i].latitude, "lng": routeData[i].longitude});
+	  				 var marker = new google.maps.Marker({
+	  			    position: {lat: routeData[i].latitude, lng: routeData[i].longitude},
+	  			    map: map,
+	  			    icon: "dot.png",
+	  			    id:i,
+	  			    title:routeData[i].dateTime,
+	  			  	timestamp: routeData[i].dateTime,
+	  			  });
+	  				marker.setOpacity(1);
+	  	          	google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
+	                  var contentString =  marker.title;
+	                  return function() {
+	                      infowindow.setContent("CCU : "+ routeData[i].additionalData +"Time : "+ routeData[i].dateTime+" "+i);
+	                      infowindow.open(map, marker);
+	                  }
+	                  })(marker, i)); //end add marker listener 
+	                  google.maps.event.addListener(marker, 'click', (function(marker, i) {
+		                  var contentString =  marker.title;
+		                  return function() {
+		                      infowindow.setContent("CCU : "+ routeData[i].additionalData +"Time : "+ routeData[i].dateTime+" "+i);
+		                      infowindow.open(map, marker);
+		                  }
+		               })(marker, i)); //end add marker listener 
+	  	            
+              }
+  		//routeCoords.push({"lat": routeData[0].latitude, "lng": routeData[0].longitude});
+  		
+    	  
+        var route = new google.maps.Polygon({
+            paths: routeCoords,
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#FF0000',
+            fillOpacity: 0.35
+          });
+         /*   var currentMarker = new google.maps.Marker({
+            position : {lat: routeData[0].latitude, lng: routeData[0].longitude},
+            map : map,
+            draggable: true,
+            timestamp: routeData[0].dateTime
+        });   */
+       route.setMap(map);
+      }
+    </script>
+    <script  
+    th:src="|https://maps.googleapis.com/maps/api/js?key=AIzaSyCg4CNce-annRV6r2QKr08CTXFA8us3M3g|">
+    </script>
+    
+  </body>
+</html>
