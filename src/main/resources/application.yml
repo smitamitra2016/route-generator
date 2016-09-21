@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://172.16.194.42:3306/ccu_v3_b
-    username: smita.mitra
-    password: n23x=7t*3R
+    url: jdbc:mysql://localhost:3306/ccu_v3_b
+    username: root
+    password: admin
 logging:
   path: application.log
 
